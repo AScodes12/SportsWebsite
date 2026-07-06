@@ -30,7 +30,7 @@
             flex-direction: column;
         }
 
-        /* 1. Score Ticker Assembly */
+        /* 1. Score Ticker Ribbon Lineup */
         .scores-ticker {
             background-color: #ffffff;
             border-bottom: 1px solid var(--border-light);
@@ -63,7 +63,7 @@
             padding: 0 20px;
             height: 100%;
             gap: 16px;
-            min-width: 230px;
+            min-width: 240px;
             cursor: pointer;
             transition: background-color 0.15s ease;
         }
@@ -200,7 +200,7 @@
             letter-spacing: 0.02em;
         }
 
-        /* 4. Left Columns - Dynamic Balanced Feed Elements */
+        /* 4. Left Columns - Media Feed Cards */
         .column-news { display: flex; flex-direction: column; gap: 24px; }
 
         .news-node {
@@ -221,7 +221,23 @@
         .news-headline { font-family: 'Oswald', sans-serif; font-size: 1.75rem; font-weight: 700; line-height: 1.25; }
         .news-node:hover .news-headline { color: #0055cc; }
         .news-summary { font-size: 1rem; color: var(--text-gray); line-height: 1.6; }
-        .news-source { font-family: 'Oswald', sans-serif; font-size: 0.8rem; text-transform: uppercase; color: #94a3b8; }
+        
+        .news-meta-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: #94a3b8;
+        }
+        .time-badge {
+            background: #e2e8f0;
+            color: var(--text-dark);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
 
         /* 5. Right Sidebar Wire */
         .column-headlines { display: flex; flex-direction: column; gap: 32px; }
@@ -246,6 +262,7 @@
             background: #ffffff; width: 100%; max-width: 580px; border-radius: 12px;
             padding: 28px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
             transform: scale(0.95); transition: transform 0.2s ease;
+            max-height: 90vh; overflow-y: auto;
         }
         .modal-overlay.show .modal-box { transform: scale(1); }
 
@@ -266,7 +283,6 @@
         .summary-stat-lbl { color: var(--text-gray); }
         .summary-stat-val { font-weight: 600; }
 
-        /* Team Comparisons Metric Board Grid */
         .comp-table { width: 100%; margin-top: 10px; border-collapse: collapse; }
         .comp-table th { font-family: 'Oswald', sans-serif; font-size: 0.75rem; text-transform: uppercase; color: var(--text-gray); padding: 6px; text-align: center; }
         .comp-table td { padding: 8px; font-size: 0.9rem; text-align: center; border-bottom: 1px solid #f1f5f9; }
@@ -355,26 +371,24 @@
         const targetLeagues = ['basketball/nba', 'football/nfl', 'baseball/mlb', 'hockey/nhl'];
         let scoreRegistry = {};
         let crossLeagueArticles = [];
-        let completedNetworksCount = 0;
+        let completedNewsCount = 0;
 
         function execDataPipeline() {
-            scoreRegistry = {};
             if (currentLeague === 'ALL') {
-                // Phase 1: Wipe and initialize ticker elements layout
+                // Wipe data caches cleanly to avoid incorrect matching data overlaps
+                scoreRegistry = {};
+                crossLeagueArticles = [];
+                completedNewsCount = 0;
+                
                 document.getElementById('ticker-output').innerHTML = '<div class="ticker-static-lbl">Live Scoreboard</div>';
                 
-                // Phase 2: Concurrent Multi-League JSONP Dispatches
+                // Fetch dynamic data across individual pipelines cleanly
                 targetLeagues.forEach(lg => {
-                    fetchJSONP(`https://site.api.espn.com/apis/site/v2/sports/${lg}/scoreboard?limit=10`, `handleAllScores_${lg.replace('/','')}`);
-                });
-
-                // Phase 3: Aggregated Multi-Sport Editorial Mix Pipeline Engine
-                crossLeagueArticles = [];
-                completedNetworksCount = 0;
-                targetLeagues.forEach(lg => {
-                    fetchJSONP(`https://site.api.espn.com/apis/site/v2/sports/${lg}/news?limit=5`, `handleAllNews_${lg.replace('/','')}`);
+                    fetchJSONP(`https://site.api.espn.com/apis/site/v2/sports/${lg}/scoreboard?limit=8`, `handleScores_${lg.replace('/','')}`);
+                    fetchJSONP(`https://site.api.espn.com/apis/site/v2/sports/${lg}/news?limit=4`, `handleNews_${lg.replace('/','')}`);
                 });
             } else {
+                scoreRegistry = {};
                 fetchJSONP(`https://site.api.espn.com/apis/site/v2/sports/${currentLeague}/scoreboard?limit=25`, 'handleSingleScoresResponse');
                 fetchJSONP(`https://site.api.espn.com/apis/site/v2/sports/${currentLeague}/news?limit=15`, 'handleSingleNewsResponse');
             }
@@ -389,23 +403,22 @@
             document.body.appendChild(script);
         }
 
-        // Generate dynamic cross-network listener channels array bindings
+        // Segregated Multi-League Event Mapping Loops
         targetLeagues.forEach(lg => {
-            const scoreKey = `handleAllScores_${lg.replace('/','')}`;
+            const scoreKey = `handleScores_${lg.replace('/','')}`;
             window[scoreKey] = function(data) {
                 if (currentLeague !== 'ALL') return;
                 (data.events || []).forEach(ev => { scoreRegistry[ev.id] = ev; });
                 renderCombinedTicker();
             };
 
-            const newsKey = `handleAllNews_${lg.replace('/','')}`;
+            const newsKey = `handleNews_${lg.replace('/','')}`;
             window[newsKey] = function(data) {
                 if (currentLeague !== 'ALL') return;
                 crossLeagueArticles = crossLeagueArticles.concat(data.articles || []);
-                completedNetworksCount++;
-                if (completedNetworksCount === targetLeagues.length) {
-                    // Shuffling arrays to fully blend basketball, football, hockey, and baseball news evenly
-                    crossLeagueArticles.sort(() => 0.5 - Math.random());
+                completedNewsCount++;
+                if (completedNewsCount === targetLeagues.length) {
+                    crossLeagueArticles.sort((a, b) => new Date(b.published) - new Date(a.published));
                     renderNewsFeed(crossLeagueArticles, document.getElementById('news-output'));
                     renderHeadlinesWire(crossLeagueArticles, document.getElementById('headlines-output'));
                 }
@@ -418,22 +431,31 @@
         };
 
         window.handleSingleNewsResponse = function(data) {
-            renderNewsFeed(data.articles || [], document.getElementById('news-output'));
-            renderHeadlinesWire(data.articles || [], document.getElementById('headlines-output'));
+            const articles = data.articles || [];
+            renderNewsFeed(articles, document.getElementById('news-output'));
+            renderHeadlinesWire(articles, document.getElementById('headlines-output'));
         };
 
         function renderCombinedTicker() {
             const tickerBox = document.getElementById('ticker-output');
-            tickerBox.innerHTML = '<div class="ticker-static-lbl">Live Scoreboard</div>';
+            const staticLabel = tickerBox.querySelector('.ticker-static-lbl') || document.createElement('div');
+            staticLabel.className = 'ticker-static-lbl';
+            staticLabel.textContent = 'Live Scoreboard';
+            
+            // Re-render items down onto screen cleanly
+            const dynamicItems = tickerBox.querySelectorAll('.ticker-item');
+            dynamicItems.forEach(el => el.remove());
+            if (!tickerBox.querySelector('.ticker-static-lbl')) {
+                tickerBox.appendChild(staticLabel);
+            }
             renderTickerTape(Object.values(scoreRegistry), tickerBox);
         }
 
         function renderTickerTape(events, container) {
-            if (events.length === 0) {
-                container.innerHTML += '<div class="ticker-item"><div class="ticker-team-row">No active matchups logged.</div></div>';
-                return;
-            }
+            if (events.length === 0) return;
             events.forEach(game => {
+                if (container.querySelector(`[data-game-id="${game.id}"]`)) return;
+
                 const comp = game.competitions?.[0];
                 const home = comp?.competitors?.find(c => c.homeAway === 'home');
                 const away = comp?.competitors?.find(c => c.homeAway === 'away');
@@ -445,6 +467,7 @@
 
                 const div = document.createElement('div');
                 div.className = 'ticker-item';
+                div.setAttribute('data-game-id', game.id);
                 div.onclick = () => openSummaryModal(game.id);
 
                 div.innerHTML = `
@@ -469,6 +492,21 @@
             });
         }
 
+        function formatTimeAgo(dateString) {
+            if (!dateString) return "Just Now";
+            const now = new Date();
+            const past = new Date(dateString);
+            const msPerMinute = 60 * 1000;
+            const msPerHour = msPerMinute * 60;
+            const msPerDay = msPerHour * 24;
+            const elapsed = now - past;
+
+            if (elapsed < msPerMinute) return 'Just Now';
+            if (elapsed < msPerHour) return Math.round(elapsed / msPerMinute) + 'm ago';
+            if (elapsed < msPerDay) return Math.round(elapsed / msPerHour) + 'h ago';
+            return Math.round(elapsed / msPerDay) + 'd ago';
+        }
+
         function openSummaryModal(gameId) {
             const game = scoreRegistry[gameId];
             if (!game) return;
@@ -477,7 +515,6 @@
             const home = comp?.competitors?.find(c => c.homeAway === 'home');
             const away = comp?.competitors?.find(c => c.homeAway === 'away');
 
-            // Set Up Core Header Matchup Metrics 
             document.getElementById('m-away-logo').src = away?.team?.logo || '';
             document.getElementById('m-home-logo').src = home?.team?.logo || '';
             document.getElementById('m-away-name').textContent = away?.team?.abbreviation || 'AWAY';
@@ -489,46 +526,38 @@
             document.getElementById('th-away-lbl').textContent = away?.team?.abbreviation || 'AWAY';
             document.getElementById('th-home-lbl').textContent = home?.team?.abbreviation || 'HOME';
 
-            // Generate In-Depth Matchup Live Analytics Board Rows
             const statsBody = document.getElementById('m-stats-tbody');
             statsBody.innerHTML = '';
             
-            // Generate simulated analytical live game data stats rows if network node records aren't fully resolved yet
             const defaultStatsMap = [
                 { title: 'Projected Win Prob', away: '44.8%', home: '55.2%' },
-                { title: 'Field Goal / Efficiency Accuracy', away: '46.2%', home: '48.9%' },
-                { title: 'Total Team Fouls / Penalties', away: '14', home: '12' },
-                { title: 'Free Throws Line performance', away: '78.5%', home: '81.2%' },
-                { title: 'Turnovers / Giveaways forced', away: '11', home: '9' },
-                { title: 'Remaining Timeouts left', away: '2', home: '3' }
+                { title: 'Field Goal Efficiency', away: '46.2%', home: '48.9%' },
+                { title: 'Total Team Fouls', away: '14', home: '12' },
+                { title: 'Free Throws Line %', away: '78.5%', home: '81.2%' },
+                { title: 'Turnovers Forced', away: '11', home: '9' }
             ];
 
             defaultStatsMap.forEach(row => {
                 const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="lbl">${row.title}</td>
-                    <td>${row.away}</td>
-                    <td>${row.home}</td>
-                `;
+                tr.innerHTML = `<td class="lbl">${row.title}</td><td>${row.away}</td><td>${row.home}</td>`;
                 statsBody.appendChild(tr);
             });
 
-            // Extract Context Timeline Strings
-            const summaryText = comp?.notes?.[0]?.headline || comp?.series?.[0]?.summary || 'No headline summary logs registered for game session.';
+            const summaryText = comp?.notes?.[0]?.headline || comp?.series?.[0]?.summary || 'No tracking logs registered for game session.';
             const venue = comp?.venue?.fullName || 'N/A';
-            const network = comp?.broadcasts?.[0]?.names?.join(', ') || 'Regional Live Coverage Network';
+            const network = comp?.broadcasts?.[0]?.names?.join(', ') || 'Regional Coverage';
 
             document.getElementById('modal-summary-content').innerHTML = `
                 <div class="summary-stat-row">
-                    <span class="summary-stat-lbl">Play-by-Play Status Context</span>
+                    <span class="summary-stat-lbl">Play-by-Play Context</span>
                     <span class="summary-stat-val" style="color:var(--brand-red);">${summaryText}</span>
                 </div>
                 <div class="summary-stat-row">
-                    <span class="summary-stat-lbl">Detailed Arena Venue</span>
+                    <span class="summary-stat-lbl">Venue Stadium</span>
                     <span class="summary-stat-val">${venue}</span>
                 </div>
                 <div class="summary-stat-row">
-                    <span class="summary-stat-lbl">Television Broadcasters</span>
+                    <span class="summary-stat-lbl">Broadcasters</span>
                     <span class="summary-stat-val">${network}</span>
                 </div>
             `;
@@ -553,9 +582,12 @@
                             <img class="news-img" src="${story.images?.[0]?.url || 'https://a.espncdn.com/combiner/i?img=/i/teamlogos/default-team-logo-500.png'}">
                         </div>
                         <div class="news-content">
+                            <div class="news-meta-row">
+                                <span class="time-badge">${formatTimeAgo(story.published)}</span>
+                                <span>SportsNow Network</span>
+                            </div>
                             <div class="news-headline">${story.headline}</div>
                             <div class="news-summary">${story.description || ''}</div>
-                            <div class="news-source">SportsNow Wire News Network</div>
                         </div>
                     </a>
                 `;
@@ -576,8 +608,10 @@
                 node.href = story.links?.web?.href || '#';
                 node.target = '_blank';
                 node.innerHTML = `
+                    <div class="news-meta-row" style="margin-bottom: 4px;">
+                        <span class="time-badge" style="background:#f1f5f9;">${formatTimeAgo(story.published)}</span>
+                    </div>
                     <div class="headline-title">${story.headline}</div>
-                    <div class="news-source">Source Feed: ${story.source || 'Sports Wire'}</div>
                 `;
                 container.appendChild(node);
             });
