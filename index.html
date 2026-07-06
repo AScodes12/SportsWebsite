@@ -33,7 +33,6 @@
             min-height: 100vh;
         }
 
-        /* Top Brand Navigation */
         nav {
             background-color: var(--espn-red);
             height: 48px;
@@ -52,7 +51,6 @@
             letter-spacing: -0.05em;
         }
 
-        /* League Selector Sub-Bar */
         .sub-nav {
             background-color: var(--bg-navbar);
             height: 40px;
@@ -63,6 +61,10 @@
         .sub-nav ul {
             display: flex;
             list-style: none;
+            height: 100%;
+        }
+
+        .sub-nav li {
             height: 100%;
         }
 
@@ -86,7 +88,6 @@
             border-bottom-color: var(--espn-red);
         }
 
-        /* ESPN Horizontal Scores Ticker Carousel */
         .ticker-wrapper {
             background-color: var(--bg-ticker);
             border-bottom: 1px solid var(--border-color);
@@ -129,7 +130,6 @@
             color: var(--text-muted);
         }
 
-        /* Two-Column Flow Layout */
         .main-layout {
             display: flex;
             max-width: 1280px;
@@ -163,7 +163,6 @@
             margin-bottom: 12px;
         }
 
-        /* Media News Wire Cards */
         .news-card {
             background-color: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -192,7 +191,6 @@
             font-weight: 500;
         }
 
-        /* Comprehensive Detailed Game Scores List */
         .score-list-card {
             background-color: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -283,56 +281,77 @@
     <script>
         let selectedRoute = 'basketball/nba';
         let backgroundTicker;
+        
+        // This public proxy circumvents the browser CORS policy safely
+        const corsProxy = "https://corsproxy.io/?";
 
         async function refreshDashboard() {
             const tickerBox = document.getElementById('ticker-target');
             const scoresBox = document.getElementById('scores-target');
             const newsBox = document.getElementById('news-target');
 
+            let eventsData = [];
+            let articlesData = [];
+
+            // Fetch Scores through CORS Proxy
             try {
-                // Fetch Scores Endpoint
-                const scoreRes = await fetch(`https://site.api.espn.com/apis/site/v2/sports/${selectedRoute}/scoreboard`);
-                const scoreData = await scoreRes.json();
-
-                // Fetch Global Dedicated News Endpoint
-                const newsRes = await fetch(`https://site.api.espn.com/apis/site/v2/sports/news`);
-                const newsData = await newsRes.json();
-
-                renderTicker(scoreData.events, tickerBox);
-                renderDetailedScores(scoreData.events, scoresBox);
-                renderNewsWire(newsData.articles, newsBox);
-            } catch (error) {
-                console.error("Pipeline breakdown structural failure", error);
+                const scoreTargetUrl = `https://site.api.espn.com/apis/site/v2/sports/${selectedRoute}/scoreboard`;
+                const scoreRes = await fetch(corsProxy + encodeURIComponent(scoreTargetUrl));
+                if (scoreRes.ok) {
+                    const scoreData = await scoreRes.json();
+                    eventsData = scoreData.events || [];
+                }
+            } catch (e) {
+                console.error("Scores endpoint block:", e);
             }
+
+            // Fetch News through CORS Proxy
+            try {
+                const newsTargetUrl = `https://site.api.espn.com/apis/site/v2/sports/news`;
+                const newsRes = await fetch(corsProxy + encodeURIComponent(newsTargetUrl));
+                if (newsRes.ok) {
+                    const newsData = await newsRes.json();
+                    articlesData = newsData.articles || [];
+                }
+            } catch (e) {
+                console.error("News endpoint block:", e);
+            }
+
+            renderTicker(eventsData, tickerBox);
+            renderDetailedScores(eventsData, scoresBox);
+            renderNewsWire(articlesData, newsBox);
         }
 
         function renderTicker(events, target) {
             target.innerHTML = '';
             if (!events || events.length === 0) {
-                target.innerHTML = '<div class="ticker-card"><div class="ticker-status">No games scheduled</div></div>';
+                target.innerHTML = '<div class="ticker-card"><div class="ticker-status">No games live or scheduled</div></div>';
                 return;
             }
 
             events.forEach(game => {
-                const comp = game.competitions[0];
-                const status = game.status.type;
-                const home = comp.competitors.find(c => c.homeAway === 'home');
-                const away = comp.competitors.find(c => c.homeAway === 'away');
+                const comp = game.competitions?.[0];
+                if (!comp) return;
+                const status = game.status?.type;
+                const home = comp.competitors?.find(c => c.homeAway === 'home');
+                const away = comp.competitors?.find(c => c.homeAway === 'away');
 
-                const isLive = status.state === 'in';
-                const isDone = status.completed;
+                if (!home || !away) return;
+
+                const isLive = status?.state === 'in';
+                const isDone = status?.completed;
                 const homeWin = parseInt(home.score) > parseInt(away.score);
 
                 const tickerCard = document.createElement('div');
                 tickerCard.className = 'ticker-card';
 
                 tickerCard.innerHTML = `
-                    <div class="ticker-status ${isLive ? 'live' : ''}">${isLive ? 'Live' : status.shortDetail}</div>
+                    <div class="ticker-status ${isLive ? 'live' : ''}">${isLive ? 'Live' : (status?.shortDetail || 'SCHED')}</div>
                     <div class="ticker-team ${isDone && !homeWin ? '' : 'loser'}">
-                        <span>${away.team.abbreviation}</span><span>${away.score}</span>
+                        <span>${away.team?.abbreviation || 'AWAY'}</span><span>${away.score || 0}</span>
                     </div>
                     <div class="ticker-team ${isDone && homeWin ? '' : 'loser'}">
-                        <span>${home.team.abbreviation}</span><span>${home.score}</span>
+                        <span>${home.team?.abbreviation || 'HOME'}</span><span>${home.score || 0}</span>
                     </div>
                 `;
                 target.appendChild(tickerCard);
@@ -342,17 +361,20 @@
         function renderDetailedScores(events, target) {
             target.innerHTML = '';
             if (!events || events.length === 0) {
-                target.innerHTML = '<div class="score-list-card">No game statistics present.</div>';
+                target.innerHTML = '<div class="score-list-card">No current match stats found.</div>';
                 return;
             }
 
             events.forEach(game => {
-                const comp = game.competitions[0];
-                const status = game.status.type;
-                const home = comp.competitors.find(c => c.homeAway === 'home');
-                const away = comp.competitors.find(c => c.homeAway === 'away');
+                const comp = game.competitions?.[0];
+                if (!comp) return;
+                const status = game.status?.type;
+                const home = comp.competitors?.find(c => c.homeAway === 'home');
+                const away = comp.competitors?.find(c => c.homeAway === 'away');
 
-                const isDone = status.completed;
+                if (!home || !away) return;
+
+                const isDone = status?.completed;
                 const homeWin = parseInt(home.score) > parseInt(away.score);
 
                 const card = document.createElement('div');
@@ -360,22 +382,22 @@
 
                 card.innerHTML = `
                     <div class="game-meta-row">
-                        <span>${status.detail}</span>
+                        <span>${status?.detail || 'Scheduled'}</span>
                         <span>${comp.broadcasts?.[0]?.names?.[0] || ''}</span>
                     </div>
                     <div class="panel-team-row ${isDone && !homeWin ? '' : 'loser'}">
                         <div class="panel-team-left">
-                            <img class="panel-logo" src="${away.team.logo || 'https://via.placeholder.com/24'}" alt="">
-                            <span class="panel-name">${away.team.displayName}</span>
+                            <img class="panel-logo" src="${away.team?.logo || 'https://via.placeholder.com/24'}" alt="">
+                            <span class="panel-name">${away.team?.displayName || 'Team'}</span>
                         </div>
-                        <span class="panel-score">${away.score}</span>
+                        <span class="panel-score">${away.score || 0}</span>
                     </div>
                     <div class="panel-team-row ${isDone && homeWin ? '' : 'loser'}">
                         <div class="panel-team-left">
-                            <img class="panel-logo" src="${home.team.logo || 'https://via.placeholder.com/24'}" alt="">
-                            <span class="panel-name">${home.team.displayName}</span>
+                            <img class="panel-logo" src="${home.team?.logo || 'https://via.placeholder.com/24'}" alt="">
+                            <span class="panel-name">${home.team?.displayName || 'Team'}</span>
                         </div>
-                        <span class="panel-score">${home.score}</span>
+                        <span class="panel-score">${home.score || 0}</span>
                     </div>
                 `;
                 target.appendChild(card);
@@ -385,19 +407,18 @@
         function renderNewsWire(articles, target) {
             target.innerHTML = '';
             if (!articles || articles.length === 0) {
-                target.innerHTML = '<div class="news-card">No press releases cataloged.</div>';
+                target.innerHTML = '<div class="news-card">Unable to load news feed.</div>';
                 return;
             }
 
-            // Limit display to top 5 primary national stories
             articles.slice(0, 5).forEach(story => {
                 const card = document.createElement('div');
                 card.className = 'news-card';
 
                 card.innerHTML = `
-                    <div class="news-headline">${story.headline}</div>
+                    <div class="news-headline">${story.headline || 'Untitled Story'}</div>
                     <div class="news-description">${story.description || ''}</div>
-                    <div class="news-meta">Source: ${story.source || 'Wire Service'}</div>
+                    <div class="news-meta">Source: ${story.source || 'Network Feed'}</div>
                 `;
                 target.appendChild(card);
             });
