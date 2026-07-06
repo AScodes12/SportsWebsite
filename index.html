@@ -3,17 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SportPulse HQ</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,700;1,700&family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>ESPN: Serving Sports Fans. Anytime. Anywhere.</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,400;0,700;1,700&family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --espn-red: #ff002b;
-            --bg-main: #0c0c0d;
-            --bg-card: #161618;
-            --bg-hover: #222225;
-            --border-line: #2a2a2e;
-            --text-primary: #ffffff;
-            --text-secondary: #a0a0ab;
+            --espn-red: #cc0000;
+            --bg-site: #f4f4f4;
+            --bg-card: #ffffff;
+            --border-light: #e2e8f0;
+            --text-dark: #252525;
+            --text-gray: #58595b;
         }
 
         * {
@@ -24,125 +23,139 @@
 
         body {
             font-family: 'Roboto', sans-serif;
-            background-color: var(--bg-main);
-            color: var(--text-primary);
+            background-color: var(--bg-site);
+            color: var(--text-dark);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
 
-        /* 1. Full-Width Premium Top Score Ticker */
+        /* 1. Authentic White Top Scores Ticker Lineup */
         .scores-ticker {
-            background-color: #000000;
-            border-bottom: 1px solid var(--border-line);
+            background-color: #ffffff;
+            border-bottom: 1px solid var(--border-light);
             display: flex;
             overflow-x: auto;
             white-space: nowrap;
-            padding: 12px;
-            gap: 12px;
-            height: 76px;
+            height: 52px;
             align-items: center;
         }
-        .scores-ticker::-webkit-scrollbar { height: 3px; }
-        .scores-ticker::-webkit-scrollbar-thumb { background: var(--border-line); }
+        .scores-ticker::-webkit-scrollbar { display: none; }
+
+        .ticker-static-lbl {
+            font-family: 'Roboto Condensed', sans-serif;
+            font-weight: 700;
+            font-size: 0.75rem;
+            color: var(--text-gray);
+            padding: 0 16px;
+            border-right: 1px solid var(--border-light);
+            height: 100%;
+            display: flex;
+            align-items: center;
+            text-transform: uppercase;
+        }
 
         .ticker-item {
             display: inline-flex;
+            align-items: center;
+            border-right: 1px solid var(--border-light);
+            padding: 0 18px;
+            height: 100%;
+            gap: 14px;
+            min-width: 170px;
+        }
+
+        .ticker-game-details {
+            display: flex;
             flex-direction: column;
             justify-content: center;
-            border-right: 1px solid var(--border-line);
-            padding-right: 20px;
-            min-width: 170px;
+            gap: 2px;
+        }
+
+        .ticker-team-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .ticker-logo {
+            width: 16px;
+            height: 16px;
+            object-fit: contain;
+        }
+
+        .ticker-score {
+            margin-left: auto;
+            font-weight: 700;
+        }
+
+        .ticker-team-row.is-losing {
+            color: #999;
+            font-weight: 400;
         }
 
         .ticker-state {
             font-family: 'Roboto Condensed', sans-serif;
             font-size: 0.7rem;
             font-weight: 700;
-            text-transform: uppercase;
-            color: var(--espn-red);
-            margin-bottom: 4px;
-            letter-spacing: 0.05em;
+            color: var(--text-gray);
+            border-left: 1px solid #eee;
+            padding-left: 10px;
         }
 
-        .ticker-team-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.85rem;
-            font-weight: 700;
-            margin-bottom: 2px;
-        }
-
-        .ticker-team-identity {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .ticker-logo {
-            width: 18px;
-            height: 18px;
-            object-fit: contain;
-        }
-
-        .ticker-team-row.is-losing {
-            color: var(--text-secondary);
-            font-weight: 400;
-        }
-
-        /* 2. Sleek Branding Header */
+        /* 2. Bold Signature Red Branding Ribbon */
         nav {
-            background-color: #000000;
-            height: 56px;
-            padding: 0 24px;
+            background-color: var(--espn-red);
+            height: 48px;
+            padding: 0 40px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid var(--border-line);
             position: relative;
             z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
         }
 
         .brand-logo {
             font-family: 'Roboto Condensed', sans-serif;
             font-weight: 700;
             font-style: italic;
-            font-size: 1.5rem;
-            color: var(--text-primary);
+            font-size: 1.8rem;
+            color: #ffffff;
+            letter-spacing: -0.06em;
             text-transform: uppercase;
-            letter-spacing: -0.05em;
         }
-        .brand-logo span { color: var(--espn-red); }
 
-        /* Integrated Compact Dropdown Menu */
+        /* Expandable Context Navigation Menu */
         .league-selector-wrapper { position: relative; }
         .menu-trigger {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-line);
-            color: var(--text-primary);
-            padding: 8px 14px;
+            background: transparent;
+            border: none;
+            color: #ffffff;
             font-family: 'Roboto Condensed', sans-serif;
             font-weight: 700;
             font-size: 0.85rem;
             text-transform: uppercase;
             cursor: pointer;
-            border-radius: 4px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
+            opacity: 0.9;
         }
+        .menu-trigger:hover { opacity: 1; }
 
         .dropdown-menu {
             position: absolute;
-            top: calc(100% + 4px);
+            top: calc(100% + 12px);
             right: 0;
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-line);
-            border-radius: 4px;
+            background-color: #ffffff;
+            border: 1px solid var(--border-light);
+            border-radius: 2px;
             list-style: none;
             width: 160px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             display: none;
         }
         .dropdown-menu.show { display: block; }
@@ -150,8 +163,8 @@
             width: 100%;
             background: transparent;
             border: none;
-            color: var(--text-primary);
-            padding: 10px 16px;
+            color: var(--text-dark);
+            padding: 12px 16px;
             text-align: left;
             font-family: 'Roboto Condensed', sans-serif;
             font-weight: 700;
@@ -159,65 +172,58 @@
             text-transform: uppercase;
             cursor: pointer;
         }
-        .dropdown-menu button:hover { background-color: var(--bg-hover); color: var(--espn-red); }
+        .dropdown-menu button:hover { background-color: #f4f4f4; color: var(--espn-red); }
 
-        /* 3. Main Interface Splitscreen Layout */
+        /* 3. Spacious Layout System Workspace */
         .workspace {
             display: grid;
-            grid-template-columns: 2fr 1.2fr;
-            max-width: 1400px;
+            grid-template-columns: 2fr 1fr;
+            max-width: 1280px;
             width: 100%;
-            margin: 20px auto;
-            padding: 0 24px;
+            margin: 24px auto;
+            padding: 0 20px;
             gap: 24px;
             flex: 1;
         }
 
         .module-header {
             font-family: 'Roboto Condensed', sans-serif;
-            font-size: 1.1rem;
+            font-size: 1rem;
             text-transform: uppercase;
             font-weight: 700;
-            letter-spacing: 0.05em;
-            margin-bottom: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .module-header::before {
-            content: '';
-            display: block;
-            width: 4px;
-            height: 14px;
-            background-color: var(--espn-red);
+            color: var(--text-dark);
+            border-bottom: 2px solid #333;
+            padding-bottom: 4px;
+            margin-bottom: 16px;
+            letter-spacing: 0.02em;
         }
 
-        /* 4. Left Column - News Feed Architecture */
+        /* 4. Left Columns - Editorial News Feed Cards */
         .column-news { display: flex; flex-direction: column; gap: 16px; }
-        
+
         .news-node {
             background-color: var(--bg-card);
-            border: 1px solid var(--border-line);
-            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
             overflow: hidden;
-            transition: border-color 0.2s, background-color 0.2s;
+            transition: box-shadow 0.15s ease;
         }
         .news-node:hover {
-            border-color: #44444a;
-            background-color: var(--bg-hover);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
 
         .news-link {
             text-decoration: none;
             color: inherit;
-            display: grid;
-            grid-template-columns: 220px 1fr;
+            display: flex;
+            flex-direction: column;
         }
 
         .news-img-container {
-            width: 220px;
-            height: 140px;
-            background-color: #000;
+            width: 100%;
+            height: 380px;
+            background-color: #f4f4f4;
+            overflow: hidden;
         }
         .news-img {
             width: 100%;
@@ -226,99 +232,98 @@
         }
 
         .news-content {
-            padding: 16px 20px;
+            padding: 20px 24px;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            gap: 8px;
         }
 
         .news-headline {
-            font-size: 1.2rem;
+            font-size: 1.6rem;
             font-weight: 900;
-            line-height: 1.3;
-            margin-bottom: 6px;
+            line-height: 1.2;
+            color: var(--text-dark);
+        }
+        .news-node:hover .news-headline {
+            color: #0066cc;
         }
 
         .news-summary {
-            font-size: 0.88rem;
-            color: var(--text-secondary);
-            line-height: 1.45;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+            font-size: 0.95rem;
+            color: var(--text-gray);
+            line-height: 1.5;
         }
 
         .news-source {
             font-family: 'Roboto Condensed', sans-serif;
             font-size: 0.7rem;
             text-transform: uppercase;
-            color: var(--text-secondary);
+            color: #999;
             font-weight: 700;
             letter-spacing: 0.05em;
-            margin-top: 8px;
         }
 
-        /* 5. Right Column - Bulletins Layout */
-        .column-headlines { display: flex; flex-direction: column; gap: 10px; }
+        /* 5. Right Columns - Crisp Text Bulletins List */
+        .column-headlines { display: flex; flex-direction: column; }
+        .headlines-container {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+        }
 
         .headline-link-node {
             text-decoration: none;
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-line);
-            padding: 14px 16px;
+            padding: 16px 20px;
             display: flex;
             flex-direction: column;
             gap: 4px;
-            border-radius: 4px;
-            transition: background-color 0.2s;
+            border-bottom: 1px solid var(--border-light);
         }
-        .headline-link-node:hover {
-            background-color: var(--bg-hover);
-        }
+        .headline-link-node:last-child { border-bottom: none; }
+        .headline-link-node:hover { background-color: #fafafa; }
 
         .headline-title {
             font-size: 0.95rem;
             font-weight: 700;
             line-height: 1.4;
-            color: var(--text-primary);
+            color: var(--text-dark);
         }
+        .headline-link-node:hover .headline-title { color: #0066cc; }
 
         .fallback-alert {
-            padding: 30px;
+            padding: 40px;
             text-align: center;
-            color: var(--text-secondary);
-            background-color: var(--bg-card);
-            border: 1px dashed var(--border-line);
-            border-radius: 6px;
+            color: var(--text-gray);
             font-size: 0.9rem;
         }
 
-        @media (max-width: 900px) {
-            .workspace { grid-template-columns: 1fr; padding: 0 16px; }
-            .news-link { grid-template-columns: 1fr; }
-            .news-img-container { width: 100%; height: 180px; }
+        @media (max-width: 850px) {
+            .workspace { grid-template-columns: 1fr; }
+            .news-img-container { height: 240px; }
         }
     </style>
 </head>
 <body>
 
     <div class="scores-ticker" id="ticker-output">
-        <div class="ticker-item"><div class="ticker-state">Loading scores...</div></div>
+        <div class="ticker-static-lbl">Scores</div>
+        <div class="ticker-item"><div class="ticker-team-row">Syncing Live Action...</div></div>
     </div>
 
     <nav>
-        <div class="brand-logo" id="brand-label">NBA <span>Live</span></div>
+        <div class="brand-logo" id="brand-label">ESPN</div>
         
         <div class="league-selector-wrapper">
             <button class="menu-trigger" onclick="toggleMenu(event)">
                 Change League ▼
             </button>
             <ul class="dropdown-menu" id="league-dropdown">
-                <li><button onclick="changeContext('basketball/nba', 'NBA Live')">NBA</button></li>
-                <li><button onclick="changeContext('football/nfl', 'NFL Live')">NFL</button></li>
-                <li><button onclick="changeContext('baseball/mlb', 'MLB Live')">MLB</button></li>
-                <li><button onclick="changeContext('hockey/nhl', 'NHL Live')">NHL</button></li>
+                <li><button onclick="changeContext('basketball/nba', 'ESPN')">NBA</button></li>
+                <li><button onclick="changeContext('football/nfl', 'ESPN')">NFL</button></li>
+                <li><button onclick="changeContext('baseball/mlb', 'ESPN')">MLB</button></li>
+                <li><button onclick="changeContext('hockey/nhl', 'ESPN')">NHL</button></li>
             </ul>
         </div>
     </nav>
@@ -327,14 +332,14 @@
         <div class="column-news">
             <div class="module-header">Featured News</div>
             <div id="news-output">
-                <div class="fallback-alert">Loading headlines...</div>
+                <div class="fallback-alert">Loading custom network feed...</div>
             </div>
         </div>
 
         <div class="column-headlines">
-            <div class="module-header">Latest Bulletins</div>
-            <div id="headlines-output">
-                <div class="fallback-alert">Loading feed...</div>
+            <div class="module-header">Latest Headlines</div>
+            <div id="headlines-output" class="headlines-container">
+                <div class="fallback-alert">Assembling news wire...</div>
             </div>
         </div>
     </div>
@@ -380,9 +385,9 @@
         };
 
         function renderTickerTape(events, container) {
-            container.innerHTML = '';
+            container.innerHTML = '<div class="ticker-static-lbl">Scores</div>';
             if (events.length === 0) {
-                container.innerHTML = '<div class="ticker-item"><div class="ticker-state">No games scheduled</div></div>';
+                container.innerHTML += '<div class="ticker-item"><div class="ticker-team-row">No Scheduled Events</div></div>';
                 return;
             }
 
@@ -404,21 +409,19 @@
                 div.className = 'ticker-item';
 
                 div.innerHTML = `
-                    <div class="ticker-state">${live ? 'LIVE' : (status?.shortDetail || 'SCHED')}</div>
-                    <div class="ticker-team-row ${done && !homeWinner ? '' : 'is-losing'}">
-                        <div class="ticker-team-identity">
+                    <div class="ticker-game-details">
+                        <div class="ticker-team-row ${done && !homeWinner ? 'is-losing' : ''}">
                             <img class="ticker-logo" src="${away.team?.logo || 'https://a.espncdn.com/combiner/i?img=/i/teamlogos/default-team-logo-500.png'}" alt="">
                             <span>${away.team?.abbreviation || 'AWAY'}</span>
+                            <span class="ticker-score">${away.score || 0}</span>
                         </div>
-                        <span>${away.score || 0}</span>
-                    </div>
-                    <div class="ticker-team-row ${done && homeWinner ? '' : 'is-losing'}">
-                        <div class="ticker-team-identity">
+                        <div class="ticker-team-row ${done && homeWinner ? '' : 'is-losing'}">
                             <img class="ticker-logo" src="${home.team?.logo || 'https://a.espncdn.com/combiner/i?img=/i/teamlogos/default-team-logo-500.png'}" alt="">
                             <span>${home.team?.abbreviation || 'HOME'}</span>
+                            <span class="ticker-score">${home.score || 0}</span>
                         </div>
-                        <span>${home.score || 0}</span>
                     </div>
+                    <div class="ticker-state">${live ? 'LIVE' : (status?.shortDetail || 'SCHED')}</div>
                 `;
                 container.appendChild(div);
             });
@@ -426,10 +429,10 @@
 
         function renderNewsFeed(articles, container) {
             container.innerHTML = '';
-            const targeted = articles.slice(0, 5);
+            const targeted = articles.slice(0, 4);
 
             if (targeted.length === 0) {
-                container.innerHTML = '<div class="fallback-alert">No featured stories available.</div>';
+                container.innerHTML = '<div class="fallback-alert">No featured stories logged.</div>';
                 return;
             }
 
@@ -445,11 +448,9 @@
                             <img class="news-img" src="${img}" alt="">
                         </div>
                         <div class="news-content">
-                            <div>
-                                <div class="news-headline">${story.headline}</div>
-                                <div class="news-summary">${story.description || ''}</div>
-                            </div>
-                            <div class="news-source">Wire: ${story.source || 'ESPN'}</div>
+                            <div class="news-headline">${story.headline}</div>
+                            <div class="news-summary">${story.description || ''}</div>
+                            <div class="news-source">ESPN Content Wire</div>
                         </div>
                     </a>
                 `;
@@ -459,10 +460,10 @@
 
         function renderHeadlinesWire(articles, container) {
             container.innerHTML = '';
-            const targeted = articles.slice(5, 12);
+            const targeted = articles.slice(4, 12);
 
             if (targeted.length === 0) {
-                container.innerHTML = '<div class="fallback-alert">No bulletins available.</div>';
+                container.innerHTML = '<div class="fallback-alert">No bulletins found.</div>';
                 return;
             }
 
@@ -487,7 +488,7 @@
 
         function changeContext(route, label) {
             endpointRoute = route;
-            document.getElementById('brand-label').innerHTML = label.replace(' Live', ' <span>Live</span>');
+            document.getElementById('brand-label').textContent = label;
             document.getElementById('league-dropdown').classList.remove('show');
             execDataPipeline();
         }
