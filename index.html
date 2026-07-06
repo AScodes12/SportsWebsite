@@ -332,49 +332,52 @@
     <script>
         let endpointRoute = 'basketball/nba';
         let backgroundSyncLoop;
-        
-        // High-reliability open source bridge to strip origin headers
-        const accessBridge = "https://api.allorigins.win/get?url=";
 
-        async function execDataPipeline() {
+        // Main orchestrator using native script elements to skip CORS proxies completely
+        function execDataPipeline() {
+            fetchJSONP(
+                `https://site.api.espn.com/apis/site/v2/sports/${endpointRoute}/scoreboard?limit=20`, 
+                'handleScoresResponse'
+            );
+
+            fetchJSONP(
+                `https://site.api.espn.com/apis/site/v2/sports/news?limit=10`, 
+                'handleNewsResponse'
+            );
+        }
+
+        function fetchJSONP(url, callbackName) {
+            const oldScript = document.getElementById(`jsonp-${callbackName}`);
+            if (oldScript) oldScript.remove();
+
+            const script = document.createElement('script');
+            script.id = `jsonp-${callbackName}`;
+            script.src = `${url}&callback=${callbackName}`;
+            
+            script.onerror = () => {
+                console.error(`JSONP failure connection on ${callbackName}`);
+            };
+
+            document.body.appendChild(script);
+        }
+
+        // Processing scores entry point
+        window.handleScoresResponse = function(data) {
             const tickerBox = document.getElementById('ticker-output');
             const scoresBox = document.getElementById('scores-output');
-            const newsBox = document.getElementById('news-output');
-
-            let parsedEvents = [];
-            let parsedArticles = [];
-
-            // 1. Core Scoreboard Extraction
-            try {
-                const targetUrl = `https://site.api.espn.com/apis/site/v2/sports/${endpointRoute}/scoreboard`;
-                const request = await fetch(accessBridge + encodeURIComponent(targetUrl));
-                if (request.ok) {
-                    const dataWrapper = await request.json();
-                    const cleanPayload = JSON.parse(dataWrapper.contents);
-                    parsedEvents = cleanPayload.events || [];
-                }
-            } catch (err) {
-                console.error("Score processing faulted:", err);
-            }
-
-            // 2. Global National News Wire Extraction
-            try {
-                const targetUrl = `https://site.api.espn.com/apis/site/v2/sports/news`;
-                const request = await fetch(accessBridge + encodeURIComponent(targetUrl));
-                if (request.ok) {
-                    const dataWrapper = await request.json();
-                    const cleanPayload = JSON.parse(dataWrapper.contents);
-                    parsedArticles = cleanPayload.articles || [];
-                }
-            } catch (err) {
-                console.error("News processing faulted:", err);
-            }
-
-            // Render Modules
+            const parsedEvents = data.events || [];
+            
             renderTickerTape(parsedEvents, tickerBox);
             renderDetailedPanel(parsedEvents, scoresBox);
+        };
+
+        // Processing news headline entry point
+        window.handleNewsResponse = function(data) {
+            const newsBox = document.getElementById('news-output');
+            const parsedArticles = data.articles || [];
+            
             renderNewsWire(parsedArticles, newsBox);
-        }
+        };
 
         function renderTickerTape(events, container) {
             container.innerHTML = '';
