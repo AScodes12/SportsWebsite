@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SportsNow: Serving Fans.</title>
+    <title>SportsNow: Live Scores, Highlights & Sports News</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,400;0,700;1,700&family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --espn-red: #cc0000;
+            --brand-red: #cc0000;
             --bg-site: #f4f4f4;
             --bg-card: #ffffff;
             --border-light: #e2e8f0;
@@ -115,7 +115,7 @@
 
         .ticker-summary-note {
             font-size: 0.65rem;
-            color: #cc0000;
+            color: var(--brand-red);
             font-weight: 500;
             max-width: 90px;
             white-space: nowrap;
@@ -126,7 +126,7 @@
 
         /* 2. Bold Signature Red Branding Ribbon */
         nav {
-            background-color: var(--espn-red);
+            background-color: var(--brand-red);
             height: 48px;
             padding: 0 40px;
             display: flex;
@@ -139,7 +139,7 @@
 
         .brand-logo {
             font-family: 'Roboto Condensed', sans-serif;
-            font-weight: 700;
+            font-weight: 900;
             font-style: italic;
             font-size: 1.8rem;
             color: #ffffff;
@@ -191,7 +191,7 @@
             text-transform: uppercase;
             cursor: pointer;
         }
-        .dropdown-menu button:hover { background-color: #f4f4f4; color: var(--espn-red); }
+        .dropdown-menu button:hover { background-color: #f4f4f4; color: var(--brand-red); }
 
         /* 3. Spacious Layout System Workspace */
         .workspace {
@@ -339,12 +339,12 @@
                 Change League ▼
             </button>
             <ul class="dropdown-menu" id="league-dropdown">
-                <li><button onclick="changeContext('basketball/nba', 'ESPN')">NBA</button></li>
-                <li><button onclick="changeContext('football/nfl', 'ESPN')">NFL</button></li>
-                <li><button onclick="changeContext('baseball/mlb', 'ESPN')">MLB</button></li>
-                <li><button onclick="changeContext('hockey/nhl', 'ESPN')">NHL</button></li>
-                <li><button onclick="changeContext('football/college-football', 'ESPN')">NCAAF</button></li>
-                <li><button onclick="changeContext('basketball/mens-college-basketball', 'ESPN')">NCAAM</button></li>
+                <li><button onclick="changeContext('basketball/nba', 'SportsNow')">NBA</button></li>
+                <li><button onclick="changeContext('football/nfl', 'SportsNow')">NFL</button></li>
+                <li><button onclick="changeContext('baseball/mlb', 'SportsNow')">MLB</button></li>
+                <li><button onclick="changeContext('hockey/nhl', 'SportsNow')">NHL</button></li>
+                <li><button onclick="changeContext('football/college-football', 'SportsNow')">NCAAF</button></li>
+                <li><button onclick="changeContext('basketball/mens-college-basketball', 'SportsNow')">NCAAM</button></li>
             </ul>
         </div>
     </nav>
@@ -426,8 +426,8 @@
                 const done = status?.completed;
                 const homeWinner = parseInt(home.score) > parseInt(away.score);
                 
-                // Extraction of ESPN Game Summary Details Notes
-                const summaryText = comp.notes?.[0]?.headline || comp.series&.[0]?.summary || status?.shortDetail || 'SCHED';
+                // Summary details note generation logic
+                const summaryText = comp.notes?.[0]?.headline || comp.series?. [0]?.summary || status?.shortDetail || 'SCHED';
 
                 const div = document.createElement('div');
                 div.className = 'ticker-item';
@@ -477,7 +477,7 @@
                         <div class="news-content">
                             <div class="news-headline">${story.headline}</div>
                             <div class="news-summary">${story.description || ''}</div>
-                            <div class="news-source">ESPN Content Wire</div>
+                            <div class="news-source">SportsNow Content Wire</div>
                         </div>
                     </a>
                 `;
