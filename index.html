@@ -3,20 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ESPN Flow Scoreboard</title>
+    <title>ESPN Flow Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,400;0,700;1,700&family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --espn-red: #ff002b;
             --bg-dark: #000000;
             --bg-nav: #111112;
-            --bg-subnav: #27272a;
-            --bg-container: #18181b;
-            --bg-surface: #242427;
-            --border-muted: #3f3f46;
+            --bg-subnav: #1c1c1e;
+            --bg-container: #111112;
+            --bg-surface: #1c1c1e;
+            --border-muted: #2d2d30;
             --text-main: #ffffff;
-            --text-muted: #a1a1aa;
-            --live-green: #22c55e;
+            --text-muted: #96969a;
         }
 
         * {
@@ -34,80 +33,16 @@
             flex-direction: column;
         }
 
-        /* ESPN Main Red Header Bar */
-        nav {
-            background-color: var(--espn-red);
-            height: 48px;
-            padding: 0 24px;
-            display: flex;
-            align-items: center;
-            border-bottom: 1px solid rgba(0,0,0,0.1);
-        }
-
-        .brand-logo {
-            font-family: 'Roboto Condensed', sans-serif;
-            font-weight: 700;
-            font-style: italic;
-            font-size: 1.6rem;
-            color: #ffffff;
-            letter-spacing: -0.06em;
-            text-transform: uppercase;
-        }
-
-        /* League Secondary Navigation Bar */
-        .sub-nav {
-            background-color: var(--bg-nav);
-            border-bottom: 1px solid var(--border-muted);
-            height: 44px;
-            display: flex;
-            padding: 0 24px;
-            overflow-x: auto;
-        }
-
-        .sub-nav ul {
-            display: flex;
-            list-style: none;
-            height: 100%;
-        }
-
-        .sub-nav li {
-            height: 100%;
-        }
-
-        .sub-nav button {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            padding: 0 20px;
-            height: 100%;
-            font-family: 'Roboto Condensed', sans-serif;
-            font-weight: 700;
-            text-transform: uppercase;
-            font-size: 0.95rem;
-            cursor: pointer;
-            letter-spacing: 0.02em;
-            border-bottom: 3px solid transparent;
-            transition: all 0.15s ease;
-        }
-
-        .sub-nav button:hover {
-            color: var(--text-main);
-        }
-
-        .sub-nav li.active button {
-            color: var(--text-main);
-            border-bottom-color: var(--espn-red);
-        }
-
-        /* Horizontal Ticker Tape Layout */
+        /* Top Horizontal Scores Ticker Strip */
         .scores-ticker {
-            background-color: var(--bg-subnav);
+            background-color: var(--bg-nav);
             border-bottom: 1px solid var(--border-muted);
             display: flex;
             overflow-x: auto;
             white-space: nowrap;
-            padding: 8px 16px;
+            padding: 10px 16px;
             gap: 4px;
+            height: 64px;
         }
 
         .ticker-item {
@@ -115,17 +50,17 @@
             flex-direction: column;
             justify-content: center;
             border-right: 1px solid var(--border-muted);
-            padding: 0 16px;
-            min-width: 150px;
+            padding: 0 20px;
+            min-width: 160px;
         }
 
         .ticker-state {
             font-family: 'Roboto Condensed', sans-serif;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 700;
             text-transform: uppercase;
             color: var(--text-muted);
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
 
         .ticker-state.is-live {
@@ -137,7 +72,8 @@
             justify-content: space-between;
             font-size: 0.85rem;
             font-weight: 700;
-            margin-bottom: 2px;
+            margin-bottom: 1px;
+            gap: 20px;
         }
 
         .ticker-team-row.is-losing {
@@ -145,28 +81,114 @@
             font-weight: 400;
         }
 
-        /* Split-Screen Interface Architecture */
+        /* ESPN Main Red Header Bar with Integrated Expandable Selector */
+        nav {
+            background-color: var(--espn-red);
+            height: 52px;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            z-index: 100;
+        }
+
+        .brand-logo {
+            font-family: 'Roboto Condensed', sans-serif;
+            font-weight: 700;
+            font-style: italic;
+            font-size: 1.5rem;
+            color: #ffffff;
+            letter-spacing: -0.06em;
+            text-transform: uppercase;
+        }
+
+        /* Native Expandable Dropdown Component */
+        .league-selector-wrapper {
+            position: relative;
+        }
+
+        .menu-trigger {
+            background-color: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            padding: 8px 16px;
+            font-family: 'Roboto Condensed', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+
+        .menu-trigger:hover {
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 4px);
+            right: 0;
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-muted);
+            border-radius: 4px;
+            list-style: none;
+            width: 180px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            display: none;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-menu button {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            padding: 12px 16px;
+            text-align: left;
+            font-family: 'Roboto Condensed', sans-serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .dropdown-menu button:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--espn-red);
+        }
+
+        /* Main Workspace Content Layout */
         .workspace {
             display: flex;
             max-width: 1400px;
             width: 100%;
             margin: 24px auto;
             padding: 0 24px;
-            gap: 24px;
+            gap: 32px;
+            flex: 1;
         }
 
-        .column-left {
-            flex: 2.2;
+        .column-news {
+            flex: 2;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 20px;
         }
 
-        .column-right {
+        .column-headlines {
             flex: 1.2;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 12px;
         }
 
         .module-header {
@@ -174,33 +196,34 @@
             font-size: 1.1rem;
             text-transform: uppercase;
             font-weight: 700;
-            border-bottom: 3px solid var(--espn-red);
+            border-bottom: 2px solid var(--espn-red);
             padding-bottom: 6px;
             margin-bottom: 8px;
             letter-spacing: 0.02em;
         }
 
-        /* News Wire Cards */
+        /* News Wire Cards (Left Side) */
         .news-node {
             background-color: var(--bg-container);
-            border: 1px solid var(--border-muted);
-            padding: 20px;
+            border-bottom: 1px solid var(--border-muted);
+            padding-bottom: 20px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
         }
 
         .news-headline {
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             font-weight: 900;
             line-height: 1.25;
             color: var(--text-main);
+            transition: color 0.2s;
         }
 
         .news-summary {
             font-size: 0.95rem;
             color: var(--text-muted);
-            line-height: 1.45;
+            line-height: 1.5;
         }
 
         .news-source {
@@ -211,80 +234,33 @@
             font-weight: 700;
         }
 
-        /* Detailed Grid Event Blocks */
-        .match-block {
-            background-color: var(--bg-container);
-            border: 1px solid var(--border-muted);
-            padding: 16px;
+        /* Headlines Wire Entries (Right Side) */
+        .headline-link-node {
+            background-color: var(--bg-surface);
+            border-left: 3px solid var(--border-muted);
+            padding: 14px 16px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 6px;
+            transition: border-left-color 0.2s;
         }
 
-        .match-meta {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            border-bottom: 1px solid var(--border-muted);
-            padding-bottom: 8px;
+        .headline-link-node:hover {
+            border-left-color: var(--espn-red);
         }
 
-        .match-meta .live-txt {
-            color: var(--espn-red);
-        }
-
-        .match-team-table {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .match-team-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .match-team-identity {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .match-logo {
-            width: 28px;
-            height: 28px;
-            object-fit: contain;
-        }
-
-        .match-name {
+        .headline-title {
             font-size: 1rem;
             font-weight: 700;
-        }
-
-        .match-score {
-            font-family: 'Roboto Condensed', sans-serif;
-            font-size: 1.4rem;
-            font-weight: 700;
-        }
-
-        .match-team-row.is-losing {
-            color: var(--text-muted);
-        }
-
-        .match-team-row.is-losing .match-name {
-            font-weight: 400;
+            line-height: 1.35;
+            color: var(--text-main);
         }
 
         .fallback-alert {
-            grid-column: 1 / -1;
             padding: 40px;
             text-align: center;
             color: var(--text-muted);
-            background-color: var(--bg-container);
+            background-color: var(--bg-surface);
             border: 1px dashed var(--border-muted);
             font-size: 0.95rem;
         }
@@ -296,35 +272,38 @@
 </head>
 <body>
 
+    <div class="scores-ticker" id="ticker-output">
+        <div class="ticker-item"><div class="ticker-state">Loading score ticker...</div></div>
+    </div>
+
     <nav>
-        <div class="brand-logo">SportPulse</div>
+        <div class="brand-logo" id="brand-label">NBA Live</div>
+        
+        <div class="league-selector-wrapper">
+            <button class="menu-trigger" onclick="toggleMenu(event)">
+                Change League ▼
+            </button>
+            <ul class="dropdown-menu" id="league-dropdown">
+                <li><button onclick="changeContext('basketball/nba', 'NBA Live')">NBA</button></li>
+                <li><button onclick="changeContext('football/nfl', 'NFL Live')">NFL</button></li>
+                <li><button onclick="changeContext('baseball/mlb', 'MLB Live')">MLB</button></li>
+                <li><button onclick="changeContext('hockey/nhl', 'NHL Live')">NHL</button></li>
+            </ul>
+        </div>
     </nav>
 
-    <div class="sub-nav">
-        <ul>
-            <li class="active"><button onclick="changeContext('basketball/nba', this)">NBA</button></li>
-            <li><button onclick="changeContext('football/nfl', this)">NFL</button></li>
-            <li><button onclick="changeContext('baseball/mlb', this)">MLB</button></li>
-            <li><button onclick="changeContext('hockey/nhl', this)">NHL</button></li>
-        </ul>
-    </div>
-
-    <div class="scores-ticker" id="ticker-output">
-        <div class="ticker-item"><div class="ticker-state">Syncing network data streams...</div></div>
-    </div>
-
     <div class="workspace">
-        <div class="column-left">
-            <div class="module-header">Top Headlines</div>
+        <div class="column-news">
+            <div class="module-header">Featured Stories</div>
             <div id="news-output">
-                <div class="fallback-alert">Downloading current global wire dispatches...</div>
+                <div class="fallback-alert">Pulling active data feeds...</div>
             </div>
         </div>
 
-        <div class="column-right">
-            <div class="module-header">Live Scoreboard</div>
-            <div id="scores-output">
-                <div class="fallback-alert">Awaiting active matchup profiles...</div>
+        <div class="column-headlines">
+            <div class="module-header">Latest Headlines</div>
+            <div id="headlines-output">
+                <div class="fallback-alert">Awaiting data loop updates...</div>
             </div>
         </div>
     </div>
@@ -332,16 +311,16 @@
     <script>
         let endpointRoute = 'basketball/nba';
         let backgroundSyncLoop;
-
-        // Main orchestrator using native script elements to skip CORS proxies completely
+        
+        // JSONP dynamic execution script configuration to handle data direct from ESPN without CORS
         function execDataPipeline() {
             fetchJSONP(
-                `https://site.api.espn.com/apis/site/v2/sports/${endpointRoute}/scoreboard?limit=20`, 
+                `https://site.api.espn.com/apis/site/v2/sports/${endpointRoute}/scoreboard?limit=25`, 
                 'handleScoresResponse'
             );
 
             fetchJSONP(
-                `https://site.api.espn.com/apis/site/v2/sports/news?limit=10`, 
+                `https://site.api.espn.com/apis/site/v2/sports/news?limit=15`, 
                 'handleNewsResponse'
             );
         }
@@ -355,34 +334,33 @@
             script.src = `${url}&callback=${callbackName}`;
             
             script.onerror = () => {
-                console.error(`JSONP failure connection on ${callbackName}`);
+                console.error(`JSONP stream disruption for function: ${callbackName}`);
             };
 
             document.body.appendChild(script);
         }
 
-        // Processing scores entry point
+        // Ticker and Scores Callback Execution
         window.handleScoresResponse = function(data) {
             const tickerBox = document.getElementById('ticker-output');
-            const scoresBox = document.getElementById('scores-output');
             const parsedEvents = data.events || [];
-            
             renderTickerTape(parsedEvents, tickerBox);
-            renderDetailedPanel(parsedEvents, scoresBox);
         };
 
-        // Processing news headline entry point
+        // News Wire Callback Execution
         window.handleNewsResponse = function(data) {
             const newsBox = document.getElementById('news-output');
+            const headlinesBox = document.getElementById('headlines-output');
             const parsedArticles = data.articles || [];
             
-            renderNewsWire(parsedArticles, newsBox);
+            renderNewsFeed(parsedArticles, newsBox);
+            renderHeadlinesWire(parsedArticles, headlinesBox);
         };
 
         function renderTickerTape(events, container) {
             container.innerHTML = '';
             if (!events || events.length === 0) {
-                container.innerHTML = '<div class="ticker-item"><div class="ticker-state">No scheduled events today</div></div>';
+                container.innerHTML = '<div class="ticker-item"><div class="ticker-state">No scheduled events found</div></div>';
                 return;
             }
 
@@ -416,81 +394,65 @@
             });
         }
 
-        function renderDetailedPanel(events, container) {
+        function renderNewsFeed(articles, container) {
             container.innerHTML = '';
-            if (!events || events.length === 0) {
-                container.innerHTML = '<div class="fallback-alert">No matchup stats listed for this context.</div>';
+            // Display first 4 items as large news pieces with descriptions
+            const targetedArticles = articles.slice(0, 4);
+
+            if (targetedArticles.length === 0) {
+                container.innerHTML = '<div class="fallback-alert">No editorial features logged.</div>';
                 return;
             }
 
-            events.forEach(game => {
-                const comp = game.competitions?.[0];
-                if (!comp) return;
-
-                const status = game.status?.type;
-                const home = comp.competitors?.find(c => c.homeAway === 'home');
-                const away = comp.competitors?.find(c => c.homeAway === 'away');
-
-                if (!home || !away) return;
-
-                const live = status?.state === 'in';
-                const done = status?.completed;
-                const homeWinner = parseInt(home.score) > parseInt(away.score);
-
-                const card = document.createElement('div');
-                card.className = 'match-block';
-
-                card.innerHTML = `
-                    <div class="match-meta">
-                        <span class="${live ? 'live-txt' : ''}">${live ? 'LIVE' : (status?.detail || 'Scheduled')}</span>
-                        <span>${comp.broadcasts?.[0]?.names?.[0] || ''}</span>
-                    </div>
-                    <div class="match-team-table">
-                        <div class="match-team-row ${done && !homeWinner ? '' : 'is-losing'}">
-                            <div class="match-team-identity">
-                                <img class="match-logo" src="${away.team?.logo || 'https://via.placeholder.com/28'}" alt="">
-                                <span class="match-name">${away.team?.displayName || 'Team'}</span>
-                            </div>
-                            <span class="match-score">${away.score || 0}</span>
-                        </div>
-                        <div class="match-team-row ${done && homeWinner ? '' : 'is-losing'}">
-                            <div class="match-team-identity">
-                                <img class="match-logo" src="${home.team?.logo || 'https://via.placeholder.com/28'}" alt="">
-                                <span class="match-name">${home.team?.displayName || 'Team'}</span>
-                            </div>
-                            <span class="match-score">${home.score || 0}</span>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        function renderNewsWire(articles, container) {
-            container.innerHTML = '';
-            if (!articles || articles.length === 0) {
-                container.innerHTML = '<div class="fallback-alert">No general editorial items are available.</div>';
-                return;
-            }
-
-            articles.slice(0, 5).forEach(story => {
+            targetedArticles.forEach(story => {
                 const node = document.createElement('div');
                 node.className = 'news-node';
-
                 node.innerHTML = `
-                    <div class="news-headline">${story.headline || 'Untitled Release'}</div>
+                    <div class="news-headline">${story.headline || 'Untitled Feature'}</div>
                     <div class="news-summary">${story.description || ''}</div>
-                    <div class="news-source">Source: ${story.source || 'Wire Reports'}</div>
+                    <div class="news-source">Wire: ${story.source || 'Network Feed'}</div>
                 `;
                 container.appendChild(node);
             });
         }
 
-        function changeContext(route, element) {
+        function renderHeadlinesWire(articles, container) {
+            container.innerHTML = '';
+            // Display remaining items as rapid fire headline modules
+            const targetedHeadlines = articles.slice(4, 12);
+
+            if (targetedHeadlines.length === 0) {
+                container.innerHTML = '<div class="fallback-alert">No media bulletpoints cataloged.</div>';
+                return;
+            }
+
+            targetedHeadlines.forEach(story => {
+                const node = document.createElement('div');
+                node.className = 'headline-link-node';
+                node.innerHTML = `
+                    <div class="headline-title">${story.headline}</div>
+                    <div class="news-source">${story.source || 'Sports Wire'}</div>
+                `;
+                container.appendChild(node);
+            });
+        }
+
+        // Dropdown Menu Interaction Controls
+        function toggleMenu(event) {
+            event.stopPropagation();
+            document.getElementById('league-dropdown').classList.toggle('show');
+        }
+
+        function changeContext(route, label) {
             endpointRoute = route;
-            document.querySelectorAll('.sub-nav li').forEach(el => el.classList.remove('active'));
-            element.parentElement.classList.add('active');
+            document.getElementById('brand-label').textContent = label;
+            document.getElementById('league-dropdown').classList.remove('show');
             execDataPipeline();
+        }
+
+        // Close menu automatically on general background window clicks
+        window.onclick = function() {
+            document.getElementById('league-dropdown').classList.remove('show');
         }
 
         execDataPipeline();
