@@ -8,14 +8,14 @@
     <style>
         :root {
             --espn-red: #ff002b;
-            --bg-dark: #000000;
+            --bg-light: #f5f6f7;
             --bg-nav: #111112;
-            --bg-subnav: #1c1c1e;
-            --bg-container: #111112;
-            --bg-surface: #1c1c1e;
-            --border-muted: #2d2d30;
-            --text-main: #ffffff;
-            --text-muted: #96969a;
+            --bg-ticker: #ffffff;
+            --bg-container: #ffffff;
+            --bg-surface: #f8f9fa;
+            --border-muted: #e2e8f0;
+            --text-main: #1a202c;
+            --text-muted: #718096;
             --live-green: #22c55e;
         }
 
@@ -27,16 +27,16 @@
 
         body {
             font-family: 'Roboto', sans-serif;
-            background-color: var(--bg-dark);
+            background-color: var(--bg-light);
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
 
-        /* Expanded Top Horizontal Scores Ticker Strip */
+        /* Top Horizontal Scores Ticker Strip */
         .scores-ticker {
-            background-color: var(--bg-nav);
+            background-color: var(--bg-ticker);
             border-bottom: 1px solid var(--border-muted);
             display: flex;
             overflow-x: auto;
@@ -106,6 +106,7 @@
             justify-content: space-between;
             position: relative;
             z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
         .brand-logo {
@@ -124,8 +125,8 @@
         }
 
         .menu-trigger {
-            background-color: rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background-color: rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             color: #ffffff;
             padding: 8px 18px;
             font-family: 'Roboto Condensed', sans-serif;
@@ -141,19 +142,19 @@
         }
 
         .menu-trigger:hover {
-            background-color: rgba(0, 0, 0, 0.4);
+            background-color: rgba(0, 0, 0, 0.3);
         }
 
         .dropdown-menu {
             position: absolute;
             top: calc(100% + 4px);
             right: 0;
-            background-color: var(--bg-surface);
+            background-color: #ffffff;
             border: 1px solid var(--border-muted);
             border-radius: 4px;
             list-style: none;
             width: 180px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             display: none;
         }
 
@@ -177,7 +178,7 @@
         }
 
         .dropdown-menu button:hover {
-            background-color: rgba(255, 255, 255, 0.05);
+            background-color: var(--bg-surface);
             color: var(--espn-red);
         }
 
@@ -217,27 +218,64 @@
             letter-spacing: 0.02em;
         }
 
-        /* News Wire Cards (Left Side) */
+        /* News Cards with Images (Left Side) */
         .news-node {
             background-color: var(--bg-container);
-            border-bottom: 1px solid var(--border-muted);
-            padding-bottom: 24px;
+            border: 1px solid var(--border-muted);
+            border-radius: 6px;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+
+        .news-link {
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .news-img-container {
+            width: 200px;
+            min-width: 200px;
+            background-color: #eaedf1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .news-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .news-content {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
         }
 
         .news-headline {
-            font-size: 1.5rem;
-            font-weight: 900;
+            font-size: 1.35rem;
+            font-weight: 800;
             line-height: 1.25;
             color: var(--text-main);
+        }
+
+        .news-node:hover .news-headline {
+            color: var(--espn-red);
         }
 
         .news-summary {
             font-size: 0.95rem;
             color: var(--text-muted);
-            line-height: 1.5;
+            line-height: 1.45;
         }
 
         .news-source {
@@ -246,25 +284,31 @@
             text-transform: uppercase;
             color: var(--text-muted);
             font-weight: 700;
+            margin-top: auto;
         }
 
         /* Headlines Wire Entries (Right Side) */
         .headline-link-node {
-            background-color: var(--bg-surface);
-            border-left: 3px solid var(--border-muted);
+            text-decoration: none;
+            background-color: var(--bg-container);
+            border: 1px solid var(--border-muted);
+            border-left: 4px solid #cbd5e0;
             padding: 14px 16px;
             display: flex;
             flex-direction: column;
             gap: 6px;
-            transition: border-left-color 0.2s;
+            border-radius: 0 4px 4px 0;
+            transition: all 0.2s ease;
         }
 
         .headline-link-node:hover {
             border-left-color: var(--espn-red);
+            background-color: var(--bg-surface);
+            transform: translateX(2px);
         }
 
         .headline-title {
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 700;
             line-height: 1.35;
             color: var(--text-main);
@@ -274,13 +318,16 @@
             padding: 40px;
             text-align: center;
             color: var(--text-muted);
-            background-color: var(--bg-surface);
+            background-color: var(--bg-container);
             border: 1px dashed var(--border-muted);
+            border-radius: 6px;
             font-size: 0.95rem;
         }
 
         @media (max-width: 960px) {
             .workspace { flex-direction: column; }
+            .news-link { flex-direction: column; }
+            .news-img-container { width: 100%; height: 180px; }
         }
     </style>
 </head>
@@ -327,13 +374,11 @@
         let backgroundSyncLoop;
         
         function execDataPipeline() {
-            // Fetch Scoreboard
             fetchJSONP(
                 `https://site.api.espn.com/apis/site/v2/sports/${endpointRoute}/scoreboard?limit=25`, 
                 'handleScoresResponse'
             );
 
-            // Fetch League-Specific News (Resolves generic global CORS failures)
             fetchJSONP(
                 `https://site.api.espn.com/apis/site/v2/sports/${endpointRoute}/news?limit=15`, 
                 'handleNewsResponse'
@@ -355,14 +400,12 @@
             document.body.appendChild(script);
         }
 
-        // Scores Callbacks Processing
         window.handleScoresResponse = function(data) {
             const tickerBox = document.getElementById('ticker-output');
             const parsedEvents = data.events || [];
             renderTickerTape(parsedEvents, tickerBox);
         };
 
-        // News Wire Callbacks Processing
         window.handleNewsResponse = function(data) {
             const newsBox = document.getElementById('news-output');
             const headlinesBox = document.getElementById('headlines-output');
@@ -427,12 +470,22 @@
             }
 
             targetedArticles.forEach(story => {
+                const articleLink = story.links?.web?.href || '#';
+                const imageSrc = story.images?.[0]?.url || 'https://a.espncdn.com/combiner/i?img=/i/teamlogos/default-team-logo-500.png';
+
                 const node = document.createElement('div');
                 node.className = 'news-node';
                 node.innerHTML = `
-                    <div class="news-headline">${story.headline || 'Untitled Feature Article'}</div>
-                    <div class="news-summary">${story.description || ''}</div>
-                    <div class="news-source">Wire: ${story.source || 'ESPN Core'}</div>
+                    <a href="${articleLink}" target="_blank" class="news-link">
+                        <div class="news-img-container">
+                            <img class="news-img" src="${imageSrc}" alt="">
+                        </div>
+                        <div class="news-content">
+                            <div class="news-headline">${story.headline || 'Untitled Feature Article'}</div>
+                            <div class="news-summary">${story.description || ''}</div>
+                            <div class="news-source">Wire: ${story.source || 'ESPN Core'}</div>
+                        </div>
+                    </a>
                 `;
                 container.appendChild(node);
             });
@@ -448,8 +501,11 @@
             }
 
             targetedHeadlines.forEach(story => {
-                const node = document.createElement('div');
+                const articleLink = story.links?.web?.href || '#';
+                const node = document.createElement('a');
                 node.className = 'headline-link-node';
+                node.href = articleLink;
+                node.target = '_blank';
                 node.innerHTML = `
                     <div class="headline-title">${story.headline}</div>
                     <div class="news-source">${story.source || 'Sports Wire'}</div>
