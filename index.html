@@ -3,20 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SportPulse Premium</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>SportPulse Network</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-main: #0b0f19;
-            --bg-sidebar: #111827;
-            --bg-card: #1f2937;
-            --bg-card-hover: #374151;
-            --border: rgba(255, 255, 255, 0.08);
-            --text-main: #f9fafb;
-            --text-muted: #9ca3af;
-            --color-primary: #38bdf8;
-            --color-live: #ef4444;
-            --color-win: #10b981;
+            --espn-red: #cc0000;
+            --bg-dark: #121214;
+            --bg-navbar: #1c1c1f;
+            --bg-card: #252529;
+            --border-light: #38383f;
+            --text-white: #ffffff;
+            --text-grey: #a1a1a6;
+            --live-green: #00cc66;
         }
 
         * {
@@ -26,435 +24,438 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-main);
-            color: var(--text-main);
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-white);
             display: flex;
+            flex-direction: column;
             min-height: 100vh;
-            letter-spacing: -0.01em;
         }
 
-        /* Sidebar Navigation */
-        aside {
-            width: 260px;
-            background-color: var(--bg-sidebar);
-            border-right: 1px solid var(--border);
+        /* Top Network Navigation Bar */
+        nav {
+            background-color: var(--espn-red);
+            padding: 0 24px;
+            height: 56px;
             display: flex;
-            flex-direction: column;
-            padding: 32px 24px;
-            gap: 40px;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            z-index: 10;
         }
 
-        .brand h1 {
-            font-size: 1.25rem;
-            font-weight: 800;
+        .nav-logo {
+            font-family: 'Roboto Condensed', sans-serif;
+            font-weight: 700;
+            font-size: 1.6rem;
+            letter-spacing: -0.05em;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--text-main);
+            font-style: italic;
         }
 
-        .menu-list {
+        .nav-links {
+            display: flex;
             list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+            height: 100%;
         }
 
-        .menu-item button {
-            width: 100%;
+        .nav-item {
+            height: 100%;
+        }
+
+        .nav-item button {
             background: transparent;
-            border: 1px solid transparent;
-            color: var(--text-muted);
-            padding: 12px 16px;
-            border-radius: 8px;
-            text-align: left;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .menu-item button:hover {
-            background-color: var(--bg-card);
-            color: var(--text-main);
-        }
-
-        .menu-item.active button {
-            background-color: var(--bg-card);
-            color: var(--color-primary);
-            border-color: rgba(56, 189, 248, 0.2);
-        }
-
-        /* Main Workspace */
-        main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 32px 40px;
-            border-bottom: 1px solid var(--border);
-            background-color: rgba(11, 15, 25, 0.8);
-            backdrop-filter: blur(8px);
-        }
-
-        header h2 {
-            font-size: 1.75rem;
-            font-weight: 800;
-            letter-spacing: -0.02em;
-        }
-
-        .refresh-status {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            border: 1px solid var(--border);
-            padding: 6px 14px;
-            border-radius: 6px;
-        }
-
-        /* Twin Column Content Layout */
-        .content-container {
-            display: flex;
-            flex: 1;
-            overflow: hidden;
-        }
-
-        .scores-view {
-            flex: 3;
-            padding: 40px;
-            overflow-y: auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-            gap: 24px;
-            align-content: start;
-        }
-
-        .side-panel {
-            flex: 1.2;
-            border-left: 1px solid var(--border);
-            background-color: var(--bg-sidebar);
-            padding: 40px 24px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
-
-        .side-panel h3 {
-            font-size: 1.1rem;
+            border: none;
+            color: rgba(255, 255, 255, 0.8);
+            padding: 0 20px;
+            height: 100%;
+            font-family: 'Roboto Condensed', sans-serif;
             font-weight: 700;
-            letter-spacing: -0.01em;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 12px;
-        }
-
-        /* Structured Cards */
-        .game-card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            transition: border-color 0.2s ease, transform 0.2s ease;
-        }
-
-        .game-card:hover {
-            border-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-        }
-
-        .card-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.75rem;
-            font-weight: 700;
+            font-size: 1rem;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.15s ease;
         }
 
-        .badge-live {
-            color: var(--color-live);
-            font-weight: 800;
+        .nav-item button:hover, .nav-item.active button {
+            background-color: rgba(0, 0, 0, 0.2);
+            color: var(--text-white);
         }
 
-        .network-tag {
-            background-color: rgba(255, 255, 255, 0.08);
-            padding: 2px 6px;
-            border-radius: 4px;
-            color: var(--text-main);
+        /* Layout Architecture */
+        .app-container {
+            display: flex;
+            flex: 1;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 24px;
+            gap: 24px;
         }
 
-        .team-section {
+        .main-content {
+            flex: 3;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 24px;
         }
 
-        .team-row {
+        .sidebar {
+            flex: 1.2;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Component Styling */
+        .section-title {
+            font-family: 'Roboto Condensed', sans-serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--border-light);
+            padding-bottom: 8px;
+            margin-bottom: 16px;
+            letter-spacing: 0.02em;
+        }
+
+        /* Featured Match Hero Banner */
+        .featured-banner {
+            background: linear-gradient(135deg, #1f1f24 0%, #0a0a0c 100%);
+            border: 1px solid var(--border-light);
+            border-top: 4px solid var(--espn-red);
+            border-radius: 4px;
+            padding: 32px;
+            display: flex;
+            justify-content: space-around;
             align-items: center;
         }
 
-        .team-profile {
+        .featured-team {
             display: flex;
+            flex-direction: column;
             align-items: center;
             gap: 12px;
+            width: 30%;
+            text-align: center;
         }
 
-        .team-logo {
-            width: 32px;
-            height: 32px;
+        .featured-logo {
+            width: 72px;
+            height: 72px;
             object-fit: contain;
         }
 
-        .team-info {
+        .featured-name {
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        .featured-center {
             display: flex;
             flex-direction: column;
-        }
-
-        .team-name {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--text-muted);
-        }
-
-        .team-record {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        .team-score {
-            font-size: 1.5rem;
-            font-weight: 700;
-            font-variant-numeric: tabular-nums;
-            color: var(--text-muted);
-        }
-
-        /* Visual Win States */
-        .winner .team-name {
-            color: var(--text-main);
-            font-weight: 700;
-        }
-        .winner .team-score {
-            color: var(--text-main);
-        }
-
-        /* News and Highlight Items */
-        .news-item {
-            padding: 16px;
-            background-color: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 0.9rem;
-            line-height: 1.4;
-            display: flex;
-            flex-direction: column;
+            align-items: center;
             gap: 8px;
         }
 
-        .news-title {
-            font-weight: 600;
-            color: var(--text-main);
+        .featured-score-row {
+            font-size: 3rem;
+            font-weight: 700;
+            font-family: 'Roboto Condensed', sans-serif;
+            letter-spacing: 12px;
         }
 
-        .news-link {
+        .featured-status {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            background-color: var(--border-light);
+            padding: 4px 12px;
+            border-radius: 20px;
+            color: var(--text-grey);
+        }
+
+        /* Standard Match Feed Grid */
+        .grid-feed {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .score-card {
+            background-color: var(--bg-card);
+            border-left: 3px solid transparent;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .score-card.is-live {
+            border-left-color: var(--live-green);
+        }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-grey);
+        }
+
+        .live-indicator {
+            color: var(--live-green);
+        }
+
+        .team-table {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .team-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .team-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .team-icon {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+        }
+
+        .team-txt {
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .team-num {
+            font-family: 'Roboto Condensed', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .losing-team .team-txt, .losing-team .team-num {
+            color: var(--text-grey);
+            font-weight: 400;
+        }
+
+        /* Right Column Wire Index */
+        .wire-card {
+            background-color: var(--bg-navbar);
+            padding: 16px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .wire-heading {
+            font-size: 0.95rem;
+            font-weight: 700;
+            line-height: 1.35;
+        }
+
+        .wire-anchor {
             font-size: 0.8rem;
-            color: var(--color-primary);
+            color: var(--espn-red);
+            text-transform: uppercase;
+            font-weight: 700;
             text-decoration: none;
-            font-weight: 600;
+            letter-spacing: 0.05em;
         }
 
-        .news-link:hover {
-            text-decoration: underline;
+        .wire-anchor:hover {
+            color: #ff3333;
         }
 
-        .system-message {
-            grid-column: 1 / -1;
+        .fallback-notice {
+            padding: 32px;
             text-align: center;
-            padding: 48px;
-            color: var(--text-muted);
-            font-size: 1rem;
+            color: var(--text-grey);
+            font-size: 0.95rem;
+            background-color: var(--bg-navbar);
+            grid-column: 1 / -1;
         }
 
         @media (max-width: 1024px) {
-            .content-container { flex-direction: column; overflow: auto; }
-            .side-panel { border-left: none; border-top: 1px solid var(--border); }
-            .scores-view { overflow: visible; }
-        }
-
-        @media (max-width: 768px) {
-            body { flex-direction: column; }
-            aside { width: 100%; border-right: none; border-bottom: 1px solid var(--border); padding: 20px; gap: 20px; }
-            header { padding: 20px; }
+            .app-container { flex-direction: column; }
+            .sidebar { border-top: 1px solid var(--border-light); padding-top: 24px; }
         }
     </style>
 </head>
 <body>
 
-    <aside>
-        <div class="brand">
-            <h1>SportPulse</h1>
-        </div>
-        <ul class="menu-list">
-            <li class="menu-item active"><button onclick="updateDashboard('basketball/nba', this)">NBA</button></li>
-            <li class="menu-item"><button onclick="updateDashboard('football/nfl', this)">NFL</button></li>
-            <li class="menu-item"><button onclick="updateDashboard('baseball/mlb', this)">MLB</button></li>
-            <li class="menu-item"><button onclick="updateDashboard('hockey/nhl', this)">NHL</button></li>
-            <li class="menu-item"><button onclick="updateDashboard('soccer/eng.1', this)">Premier League</button></li>
+    <nav>
+        <div class="nav-logo">SportPulse</div>
+        <ul class="nav-links">
+            <li class="nav-item active"><button onclick="switchContext('basketball/nba', this)">NBA</button></li>
+            <li class="nav-item"><button onclick="switchContext('football/nfl', this)">NFL</button></li>
+            <li class="nav-item"><button onclick="switchContext('baseball/mlb', this)">MLB</button></li>
+            <li class="nav-item"><button onclick="switchContext('hockey/nhl', this)">NHL</button></li>
+            <li class="nav-item"><button onclick="switchContext('soccer/eng.1', this)">Premier League</button></li>
         </ul>
-    </aside>
+    </nav>
 
-    <main>
-        <header>
-            <h2 id="view-title">NBA Scores</h2>
-            <div class="refresh-status" id="timestamp">Syncing</div>
-        </header>
-
-        <div class="content-container">
-            <div class="scores-view" id="scores-display">
-                <div class="system-message">Loading active schedules</div>
+    <div class="app-container">
+        <div class="main-content">
+            <div>
+                <div class="section-title">Headline Match</div>
+                <div id="hero-target"></div>
             </div>
-            
-            <div class="side-panel">
-                <h3>Leaguewide Coverage</h3>
-                <div id="headlines-display">
-                    <div class="news-item">Gathering current media updates</div>
+
+            <div>
+                <div class="section-title">Scoreboard Feed</div>
+                <div class="grid-feed" id="feed-target">
+                    <div class="fallback-notice">Syncing network data streams...</div>
                 </div>
             </div>
         </div>
-    </main>
+
+        <div class="sidebar">
+            <div>
+                <div class="section-title">Top Headlines</div>
+                <div id="wire-target">
+                    <div class="wire-card">Waiting for active coverage updates...</div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
-        let selectedSport = 'basketball/nba';
-        let backgroundProcess;
+        let networkRoute = 'basketball/nba';
+        let refreshSync;
 
-        async function loadData() {
-            const scoresContainer = document.getElementById('scores-display');
-            const headlinesContainer = document.getElementById('headlines-display');
-            const timeLabel = document.getElementById('timestamp');
+        async function pullPipeline() {
+            const feedBox = document.getElementById('feed-target');
+            const heroBox = document.getElementById('hero-target');
+            const wireBox = document.getElementById('wire-target');
 
             try {
-                const response = await fetch(`https://site.api.espn.com/apis/site/v2/sports/${selectedSport}/scoreboard`);
+                const response = await fetch(`https://site.api.espn.com/apis/site/v2/sports/${networkRoute}/scoreboard`);
                 if (!response.ok) throw new Error();
                 const data = await response.json();
                 
-                buildScoreCards(data.events, scoresContainer);
-                buildHeadlines(data.events, headlinesContainer);
-                
-                const time = new Date();
-                timeLabel.textContent = `Updated ${time.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'})}`;
-            } catch (error) {
-                scoresContainer.innerHTML = `<div class="system-message">Unable to retrieve current data. Retrying connection.</div>`;
+                generateContent(data.events, feedBox, heroBox, wireBox);
+            } catch (err) {
+                feedBox.innerHTML = `<div class="fallback-notice">Data feed communication failure. Reloading context...</div>`;
             }
         }
 
-        function buildScoreCards(events, target) {
-            target.innerHTML = '';
+        function generateContent(events, feed, hero, wire) {
+            feed.innerHTML = '';
+            hero.innerHTML = '';
+            wire.innerHTML = '';
 
             if (!events || events.length === 0) {
-                target.innerHTML = '<div class="system-message">No matchups scheduled for this date.</div>';
+                feed.innerHTML = '<div class="fallback-notice">No games scheduled on today\'s broadcast calendar.</div>';
+                hero.innerHTML = '<div class="fallback-notice">No featured match profiles available.</div>';
+                wire.innerHTML = '<div class="wire-card"><div class="wire-heading">No media highlights active.</div></div>';
                 return;
             }
 
+            // 1. Build Featured Hero Card (First Event)
+            const primaryGame = events[0];
+            const primaryComp = primaryGame.competitions[0];
+            const pHome = primaryComp.competitors.find(c => c.homeAway === 'home');
+            const pAway = primaryComp.competitors.find(c => c.homeAway === 'away');
+
+            hero.innerHTML = `
+                <div class="featured-banner">
+                    <div class="featured-team">
+                        <img class="featured-logo" src="${pAway.team.logo || 'https://via.placeholder.com/72'}" alt="">
+                        <div class="featured-name">${pAway.team.displayName}</div>
+                    </div>
+                    <div class="featured-center">
+                        <div class="featured-score-row">${pAway.score}-${pHome.score}</div>
+                        <div class="featured-status">${primaryGame.status.type.detail}</div>
+                    </div>
+                    <div class="featured-team">
+                        <img class="featured-logo" src="${pHome.team.logo || 'https://via.placeholder.com/72'}" alt="">
+                        <div class="featured-name">${pHome.team.displayName}</div>
+                    </div>
+                </div>
+            `;
+
+            // 2. Build Dashboard Feed Grid
             events.forEach(game => {
-                const details = game.competitions[0];
+                const comp = game.competitions[0];
                 const state = game.status.type;
-                
-                const home = details.competitors.find(t => t.homeAway === 'home');
-                const away = details.competitors.find(t => t.homeAway === 'away');
+                const home = comp.competitors.find(c => c.homeAway === 'home');
+                const away = comp.competitors.find(c => c.homeAway === 'away');
 
-                const finished = state.completed;
-                const active = state.state === 'in';
-                const hScore = parseInt(home.score) || 0;
-                const aScore = parseInt(away.score) || 0;
-
-                const station = details.broadcasts?.[0]?.names?.[0] || '';
+                const live = state.state === 'in';
+                const done = state.completed;
+                const hNum = parseInt(home.score) || 0;
+                const aNum = parseInt(away.score) || 0;
 
                 const card = document.createElement('div');
-                card.className = 'game-card';
+                card.className = `score-card ${live ? 'is-live' : ''}`;
 
                 card.innerHTML = `
-                    <div class="card-meta">
-                        <span class="${active ? 'badge-live' : ''}">${active ? 'Live' : state.detail}</span>
-                        ${station ? `<span class="network-tag">${station}</span>` : ''}
+                    <div class="card-top">
+                        <span class="${live ? 'live-indicator' : ''}">${live ? 'LIVE' : state.detail}</span>
+                        <span>${comp.broadcasts?.[0]?.names?.[0] || ''}</span>
                     </div>
-                    <div class="team-section">
-                        <div class="team-row ${finished && aScore > hScore ? 'winner' : ''}">
-                            <div class="team-profile">
-                                <img class="team-logo" src="${away.team.logo || 'https://via.placeholder.com/32'}" alt="">
-                                <div class="team-info">
-                                    <span class="team-name">${away.team.displayName}</span>
-                                    <span class="team-record">${away.records?.[0]?.summary || '0-0'}</span>
-                                </div>
+                    <div class="team-table">
+                        <div class="team-line ${done && hNum > aNum ? 'losing-team' : ''}">
+                            <div class="team-left">
+                                <img class="team-icon" src="${away.team.logo || 'https://via.placeholder.com/24'}" alt="">
+                                <span class="team-txt">${away.team.shortDisplayName || away.team.displayName}</span>
                             </div>
-                            <span class="team-score">${away.score}</span>
+                            <span class="team-num">${away.score}</span>
                         </div>
-                        <div class="team-row ${finished && hScore > aScore ? 'winner' : ''}">
-                            <div class="team-profile">
-                                <img class="team-logo" src="${home.team.logo || 'https://via.placeholder.com/32'}" alt="">
-                                <div class="team-info">
-                                    <span class="team-name">${home.team.displayName}</span>
-                                    <span class="team-record">${home.records?.[0]?.summary || '0-0'}</span>
-                                </div>
+                        <div class="team-line ${done && aNum > hNum ? 'losing-team' : ''}">
+                            <div class="team-left">
+                                <img class="team-icon" src="${home.team.logo || 'https://via.placeholder.com/24'}" alt="">
+                                <span class="team-txt">${home.team.shortDisplayName || home.team.displayName}</span>
                             </div>
-                            <span class="team-score">${home.score}</span>
+                            <span class="team-num">${home.score}</span>
                         </div>
                     </div>
                 `;
-                target.appendChild(card);
+                feed.appendChild(card);
             });
-        }
 
-        function buildHeadlines(events, target) {
-            target.innerHTML = '';
-            let storyCount = 0;
+            // 3. Build Sidebar Media Wire
+            let storyCounter = 0;
+            events.forEach(game => {
+                if (game.headlines?.[0] && storyCounter < 6) {
+                    const headline = game.headlines[0];
+                    const item = document.createElement('div');
+                    item.className = 'wire-card';
+                    item.innerHTML = `
+                        <div class="wire-heading">${headline.description || headline.shortLinkText}</div>
+                        ${headline.link ? `<a class="wire-anchor" href="${headline.link}" target="_blank">Full Story</a>` : ''}
+                    `;
+                    wire.appendChild(item);
+                    storyCounter++;
+                }
+            });
 
-            if (events) {
-                events.forEach(game => {
-                    if (game.headlines?.[0] && storyCount < 5) {
-                        const story = game.headlines[0];
-                        const item = document.createElement('div');
-                        item.className = 'news-item';
-                        item.innerHTML = `
-                            <div class="news-title">${story.description || story.shortLinkText}</div>
-                            ${story.link ? `<a class="news-link" href="${story.link}" target="_blank">Read Analysis</a>` : ''}
-                        `;
-                        target.appendChild(item);
-                        storyCount++;
-                    }
-                });
-            }
-
-            if (storyCount === 0) {
-                target.innerHTML = '<div class="news-item">No editorial headlines listed for active matchups.</div>';
+            if (storyCounter === 0) {
+                wire.innerHTML = '<div class="wire-card"><div class="wire-heading">No current press bulletins posted for these matchups.</div></div>';
             }
         }
 
-        function updateDashboard(path, emitter) {
-            selectedSport = path;
-            
-            document.querySelectorAll('.menu-item').forEach(li => li.classList.remove('active'));
-            emitter.parentElement.classList.add('active');
-            
-            document.getElementById('view-title').textContent = `${emitter.textContent} Scores`;
-            
-            loadData();
+        function switchContext(route, element) {
+            networkRoute = route;
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            element.parentElement.classList.add('active');
+            pullPipeline();
         }
 
-        loadData();
-        clearInterval(backgroundProcess);
-        backgroundProcess = setInterval(loadData, 30000);
+        pullPipeline();
+        clearInterval(refreshSync);
+        refreshSync = setInterval(pullPipeline, 25000);
     </script>
 </body>
 </html>
