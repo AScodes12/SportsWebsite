@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ESPN: Serving Sports Fans. Anytime. Anywhere.</title>
+    <title>SportsNow: Serving Fans.</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,400;0,700;1,700&family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -37,7 +37,7 @@
             display: flex;
             overflow-x: auto;
             white-space: nowrap;
-            height: 52px;
+            height: 60px;
             align-items: center;
         }
         .scores-ticker::-webkit-scrollbar { display: none; }
@@ -62,7 +62,7 @@
             padding: 0 18px;
             height: 100%;
             gap: 14px;
-            min-width: 170px;
+            min-width: 210px;
         }
 
         .ticker-game-details {
@@ -70,6 +70,7 @@
             flex-direction: column;
             justify-content: center;
             gap: 2px;
+            flex: 1;
         }
 
         .ticker-team-row {
@@ -89,6 +90,7 @@
         .ticker-score {
             margin-left: auto;
             font-weight: 700;
+            padding-left: 12px;
         }
 
         .ticker-team-row.is-losing {
@@ -96,13 +98,30 @@
             font-weight: 400;
         }
 
+        .ticker-meta-panel {
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid #eee;
+            padding-left: 10px;
+            justify-content: center;
+        }
+
         .ticker-state {
             font-family: 'Roboto Condensed', sans-serif;
             font-size: 0.7rem;
             font-weight: 700;
             color: var(--text-gray);
-            border-left: 1px solid #eee;
-            padding-left: 10px;
+        }
+
+        .ticker-summary-note {
+            font-size: 0.65rem;
+            color: #cc0000;
+            font-weight: 500;
+            max-width: 90px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-top: 1px;
         }
 
         /* 2. Bold Signature Red Branding Ribbon */
@@ -154,7 +173,7 @@
             border: 1px solid var(--border-light);
             border-radius: 2px;
             list-style: none;
-            width: 160px;
+            width: 180px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             display: none;
         }
@@ -313,7 +332,7 @@
     </div>
 
     <nav>
-        <div class="brand-logo" id="brand-label">ESPN</div>
+        <div class="brand-logo" id="brand-label">SportsNow</div>
         
         <div class="league-selector-wrapper">
             <button class="menu-trigger" onclick="toggleMenu(event)">
@@ -324,6 +343,8 @@
                 <li><button onclick="changeContext('football/nfl', 'ESPN')">NFL</button></li>
                 <li><button onclick="changeContext('baseball/mlb', 'ESPN')">MLB</button></li>
                 <li><button onclick="changeContext('hockey/nhl', 'ESPN')">NHL</button></li>
+                <li><button onclick="changeContext('football/college-football', 'ESPN')">NCAAF</button></li>
+                <li><button onclick="changeContext('basketball/mens-college-basketball', 'ESPN')">NCAAM</button></li>
             </ul>
         </div>
     </nav>
@@ -404,6 +425,9 @@
                 const live = status?.state === 'in';
                 const done = status?.completed;
                 const homeWinner = parseInt(home.score) > parseInt(away.score);
+                
+                // Extraction of ESPN Game Summary Details Notes
+                const summaryText = comp.notes?.[0]?.headline || comp.series&.[0]?.summary || status?.shortDetail || 'SCHED';
 
                 const div = document.createElement('div');
                 div.className = 'ticker-item';
@@ -421,7 +445,10 @@
                             <span class="ticker-score">${home.score || 0}</span>
                         </div>
                     </div>
-                    <div class="ticker-state">${live ? 'LIVE' : (status?.shortDetail || 'SCHED')}</div>
+                    <div class="ticker-meta-panel">
+                        <div class="ticker-state">${live ? 'LIVE' : (status?.shortDetail || 'FINAL')}</div>
+                        <div class="ticker-summary-note" title="${summaryText}">${summaryText}</div>
+                    </div>
                 `;
                 container.appendChild(div);
             });
